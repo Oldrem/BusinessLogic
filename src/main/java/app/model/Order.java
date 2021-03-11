@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -15,16 +16,18 @@ public class Order {
     private Long productId;
     private String fullAddress;
     private String methodOfDelivery;
+    private LocalDateTime date;
     private Boolean isConfirmed;
 
     public Order() {}
 
-    public Order(String clientName, String clientLastName, Long productId, String fullAddress, String methodOfDelivery, Boolean isConfirmed) {
+    public Order(String clientName, String clientLastName, Long productId, String fullAddress, String methodOfDelivery, LocalDateTime date, Boolean isConfirmed) {
         this.clientName = clientName;
         this.clientLastName = clientLastName;
         this.productId = productId;
         this.fullAddress = fullAddress;
         this.methodOfDelivery = methodOfDelivery;
+        this.date = date;
         this.isConfirmed = isConfirmed;
     }
 
@@ -93,6 +96,14 @@ public class Order {
 
     public void setMethodOfDelivery(String methodOfDelivery) {
         this.methodOfDelivery = methodOfDelivery;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public Boolean getConfirmed() {
