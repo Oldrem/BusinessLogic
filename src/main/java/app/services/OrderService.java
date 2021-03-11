@@ -1,5 +1,6 @@
 package app.services;
 
+import app.controllers.helpers.OrderRequestBody;
 import app.model.Order;
 import app.model.Product;
 import app.repositories.OrderRepository;
@@ -31,14 +32,7 @@ public class OrderService
 
 
     @Transactional
-    public void onOrderConfirmed(Order order)
-    {
-        order.setConfirmed(true);
-        order.setConfirmationDate(LocalDateTime.now());
-    }
-
-    @Transactional
-    public void onOrderPaid(Order order)
+    public void startOnOrderPaidTransaction(Order order)
     {
         order.setPayed(true);
         Product product = order.getProduct();
@@ -48,13 +42,11 @@ public class OrderService
     }
 
     @Transactional
-    public Order addOrder(Order order)
+    public Order startAddOrderTransaction(OrderRequestBody rawOrder)
     {
-        Optional<Product> p = products.findById(order.getProduct().getId());
-        if (!p.isPresent())
-            throw new ProductBookingException("Invalid product ID");
+        Order order = rawOrder.constructOrder(products);
 
-        Product product = p.get();
+        Product product = order.getProduct();
         product.setBookedAmount(order.getProduct().getBookedAmount() + 1);
         if (product.getAmount() < product.getBookedAmount())
             throw new ProductBookingException("This product is either unavailable or fully booked");
@@ -64,7 +56,7 @@ public class OrderService
 
 
     @Scheduled(fixedRate = 1000 * 60)
-    public void scheduleFixedDelayTask()
+    public void removedUnpaidOverdueOrders()
     {
         System.out.println("Launching overdue order cancellation...");
         int cancelled = 0;
@@ -80,6 +72,8 @@ public class OrderService
 
         System.out.println("Cancelled " + cancelled + " orders.");
     }
+
+
 
     private static boolean isOverCancelTime(LocalDateTime dateTime)
     {

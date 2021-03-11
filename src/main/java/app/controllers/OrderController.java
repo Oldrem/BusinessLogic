@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.controllers.helpers.OrderRequestBody;
 import app.model.Order;
 import app.repositories.OrderRepository;
 import app.services.OrderService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -20,14 +22,11 @@ import java.util.Optional;
 public class OrderController {
     private OrderRepository orderRepository;
     private OrderService orderService;
-    private ProductRepository productRepository;
 
     public OrderController(OrderRepository orderRepository,
-                           OrderService orderService,
-                           ProductRepository productRepository) {
+                           OrderService orderService) {
         this.orderRepository = orderRepository;
         this.orderService = orderService;
-        this.productRepository = productRepository;
     }
 
     @GetMapping("/orders")
@@ -43,18 +42,11 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) throws URISyntaxException {
-        /*Optional<Product> optionalProduct = productRepository.findById(order.getProduct().getId());
-        if (optionalProduct.isPresent()){
-            Product product = optionalProduct.get();
-            product.setBookedAmount(product.getBookedAmount()+1);
-        }
-        else {
-            return ResponseEntity.badRequest().body(result);
-        }*/
+    ResponseEntity<Order> createOrder(@Valid @RequestBody OrderRequestBody rawOrder) throws URISyntaxException
+    {
         try
         {
-            Order result = orderService.addOrder(order);
+            Order result = orderService.startAddOrderTransaction(rawOrder);
             return ResponseEntity.created(new URI("/order/" + result.getOrderId()))
                     .body(result);
         }
@@ -83,9 +75,9 @@ public class OrderController {
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
-        orderService.onOrderPaid(order.get());
+        orderService.startOnOrderPaidTransaction(order.get());
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().body(order.get());
     }
 
     @PutMapping("/order/{id}/confirmed")
@@ -94,7 +86,19 @@ public class OrderController {
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
-        orderService.onOrderConfirmed(order.get());
+        order.get().setConfirmed(true);
+        order.get().setConfirmationDate(LocalDateTime.now());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/order/{id}/received")
+    ResponseEntity<Order> updateReceivedStatus(@PathVariable Long id, @RequestParam Boolean value) {
+        Optional<Order> order = orderRepository.findById(id);
+        if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+        order.get().setReceived(true);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
