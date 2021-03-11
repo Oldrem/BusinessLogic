@@ -1,7 +1,9 @@
 package app.controllers;
 
 import app.model.Order;
+import app.model.Product;
 import app.repositories.OrderRepository;
+import app.repositories.ProductRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +18,11 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class OrderController {
     private OrderRepository orderRepository;
+    private ProductRepository productRepository;
 
-    public OrderController(OrderRepository orderRepository) {
+    public OrderController(OrderRepository orderRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
+        this.productRepository = productRepository;
     }
 
     @GetMapping("/orders")
@@ -36,6 +40,14 @@ public class OrderController {
     @PostMapping("/order")
     ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) throws URISyntaxException {
         Order result = orderRepository.save(order);
+        Optional<Product> optionalProduct = productRepository.findById(order.getProduct().getId());
+        if (optionalProduct.isPresent()){
+            Product product = optionalProduct.get();
+            product.setBookedAmount(product.getBookedAmount()+1);
+        }
+        else {
+            return ResponseEntity.badRequest().body(result);
+        }
         return ResponseEntity.created(new URI("/order/" + result.getOrderId()))
                 .body(result);
     }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Order")
+@Table(name="ClientOrder")
 public class Order {
     private @Id @GeneratedValue Long orderId;
     private String clientName;
