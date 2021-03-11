@@ -5,6 +5,7 @@ import app.model.Product;
 import app.repositories.OrderRepository;
 import app.services.OrderService;
 import app.repositories.ProductRepository;
+import app.services.ProductBookingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +45,6 @@ public class OrderController {
 
     @PostMapping("/order")
     ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) throws URISyntaxException {
-        order.getProduct().setBookedAmount(order.getProduct().getBookedAmount()+1);
-        Order result = orderRepository.save(order);
         /*Optional<Product> optionalProduct = productRepository.findById(order.getProduct().getId());
         if (optionalProduct.isPresent()){
             Product product = optionalProduct.get();
@@ -54,8 +53,16 @@ public class OrderController {
         else {
             return ResponseEntity.badRequest().body(result);
         }*/
-        return ResponseEntity.created(new URI("/order/" + result.getOrderId()))
-                .body(result);
+        try
+        {
+            Order result = orderService.addOrder(order);
+            return ResponseEntity.created(new URI("/order/" + result.getOrderId()))
+                    .body(result);
+        }
+        catch (ProductBookingException e)
+        {
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        }
     }
 
     @PutMapping("/order/{id}")
