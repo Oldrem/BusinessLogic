@@ -41,7 +41,7 @@ public class OrderService
     {
         Product product = order.getProduct();
         product.setBookedAmount(order.getProduct().getBookedAmount()+1);
-        if (product.getAmount() > product.getBookedAmount())
+        if (product.getAmount() < product.getBookedAmount())
             throw new ProductBookingException("This product is either unavailable or all booked");
         return orders.save(order);
     }
