@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 public class CourierDelivery {
     private @Id @GeneratedValue Long courierDeliveryId;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     private Order order;
     private String assignedCourier;
 

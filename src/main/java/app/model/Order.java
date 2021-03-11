@@ -10,7 +10,7 @@ public class Order {
     private @Id @GeneratedValue Long orderId;
     private String clientName;
     private String clientLastName;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "productId", nullable = false)
     private Product product;
     private String fullAddress;
