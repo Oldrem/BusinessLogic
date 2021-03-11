@@ -1,14 +1,11 @@
 package app.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class TakeoutDelivery {
     private @Id @GeneratedValue Long takeoutDeliveryId;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER,cascade= CascadeType.ALL)
     private Order order;
     private String takeoutAddress;
 
