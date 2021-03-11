@@ -21,7 +21,7 @@ public class Order {
     private Boolean isCanceled;
     private Boolean isPayed;
 
-    private Order() {}
+    public Order() {}
 
     public Order(String clientName, String clientLastName, Product product, String fullAddress, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, Boolean isConfirmed, Boolean isCanceled, Boolean isPayed) {
         this.clientName = clientName;
