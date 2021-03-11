@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name="ClientOrder")
+@Table(name="client_order")
 public class Order {
     private @Id @GeneratedValue Long orderId;
     private String clientName;
@@ -20,10 +20,11 @@ public class Order {
     private Boolean isConfirmed;
     private Boolean isCanceled;
     private Boolean isPayed;
+    private Boolean isReceived;
 
     public Order() {}
 
-    public Order(String clientName, String clientLastName, Product product, String fullAddress, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, Boolean isConfirmed, Boolean isCanceled, Boolean isPayed) {
+    public Order(String clientName, String clientLastName, Product product, String fullAddress, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, Boolean isConfirmed, Boolean isCanceled, Boolean isPayed, Boolean isReceived) {
         this.clientName = clientName;
         this.clientLastName = clientLastName;
         this.product = product;
@@ -34,6 +35,7 @@ public class Order {
         this.isConfirmed = isConfirmed;
         this.isCanceled = isCanceled;
         this.isPayed = isPayed;
+        this.isReceived = isReceived;
     }
 
     public Long getOrderId() {
@@ -122,5 +124,13 @@ public class Order {
 
     public void setPayed(Boolean payed) {
         isPayed = payed;
+    }
+
+    public Boolean getReceived() {
+        return isReceived;
+    }
+
+    public void setReceived(Boolean received) {
+        isReceived = received;
     }
 }
