@@ -3,6 +3,7 @@ package app.services;
 import app.model.Order;
 import app.model.Product;
 import app.repositories.OrderRepository;
+import app.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,18 +12,21 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service("orderService")
-@EnableScheduling //Does this work? Probably not
+@EnableScheduling
 public class OrderService
 {
     public static final Duration cancelPeriod = Duration.ofDays(1);
 
     private OrderRepository orders;
+    private ProductRepository products;
 
     @Autowired
-    public void setData(OrderRepository orders) {
+    public void setData(OrderRepository orders, ProductRepository products) {
         this.orders = orders;
+        this.products = products;
     }
 
 
@@ -39,7 +43,11 @@ public class OrderService
     @Transactional
     public Order addOrder(Order order)
     {
-        Product product = order.getProduct();
+        Optional<Product> p = products.findById(order.getProduct().getId());
+        if (!p.isPresent())
+            throw new ProductBookingException("Invalid product ID");
+
+        Product product = p.get();
         product.setBookedAmount(order.getProduct().getBookedAmount()+1);
         if (product.getAmount() < product.getBookedAmount())
             throw new ProductBookingException("This product is either unavailable or all booked");
