@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Maven: javax.servlet-api:javax.servlet:unknown">
+    <CLASSES />
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/javax/servlet-api/javax.servlet/unknown/javax.servlet-unknown-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/javax/servlet-api/javax.servlet/unknown/javax.servlet-unknown-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
