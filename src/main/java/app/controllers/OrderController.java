@@ -52,6 +52,7 @@ public class OrderController {
         }
         catch (ProductBookingException e)
         {
+            System.out.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         }
     }
