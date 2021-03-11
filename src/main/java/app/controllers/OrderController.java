@@ -3,6 +3,7 @@ package app.controllers;
 import app.model.Order;
 import app.model.Product;
 import app.repositories.OrderRepository;
+import app.services.OrderService;
 import app.repositories.ProductRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,14 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class OrderController {
     private OrderRepository orderRepository;
+    private OrderService orderService;
     private ProductRepository productRepository;
 
-    public OrderController(OrderRepository orderRepository, ProductRepository productRepository) {
+    public OrderController(OrderRepository orderRepository,
+                           OrderService orderService,
+                           ProductRepository productRepository) {
         this.orderRepository = orderRepository;
+        this.orderService = orderService;
         this.productRepository = productRepository;
     }
 
@@ -62,5 +67,17 @@ public class OrderController {
     public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
         orderRepository.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+
+
+    @PutMapping("/order/{id}/payed")
+    ResponseEntity<Order> updatePayedStatus(@PathVariable Long id, @RequestParam Boolean value) {
+        Optional<Order> order = orderRepository.findById(id);
+        if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+        orderService.confirmOrderPayment(order.get());
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
