@@ -39,15 +39,16 @@ public class OrderController {
 
     @PostMapping("/order")
     ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) throws URISyntaxException {
+        order.getProduct().setBookedAmount(order.getProduct().getBookedAmount()+1);
         Order result = orderRepository.save(order);
-        Optional<Product> optionalProduct = productRepository.findById(order.getProduct().getId());
+        /*Optional<Product> optionalProduct = productRepository.findById(order.getProduct().getId());
         if (optionalProduct.isPresent()){
             Product product = optionalProduct.get();
             product.setBookedAmount(product.getBookedAmount()+1);
         }
         else {
             return ResponseEntity.badRequest().body(result);
-        }
+        }*/
         return ResponseEntity.created(new URI("/order/" + result.getOrderId()))
                 .body(result);
     }
