@@ -31,7 +31,14 @@ public class OrderService
 
 
     @Transactional
-    public void confirmOrderPayment(Order order)
+    public void onOrderConfirmed(Order order)
+    {
+        order.setConfirmed(true);
+        order.setConfirmationDate(LocalDateTime.now());
+    }
+
+    @Transactional
+    public void onOrderPaid(Order order)
     {
         order.setPayed(true);
         Product product = order.getProduct();
@@ -48,9 +55,9 @@ public class OrderService
             throw new ProductBookingException("Invalid product ID");
 
         Product product = p.get();
-        product.setBookedAmount(order.getProduct().getBookedAmount()+1);
+        product.setBookedAmount(order.getProduct().getBookedAmount() + 1);
         if (product.getAmount() < product.getBookedAmount())
-            throw new ProductBookingException("This product is either unavailable or all booked");
+            throw new ProductBookingException("This product is either unavailable or fully booked");
         return orders.save(order);
     }
 

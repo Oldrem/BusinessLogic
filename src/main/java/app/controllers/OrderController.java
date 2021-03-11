@@ -1,7 +1,6 @@
 package app.controllers;
 
 import app.model.Order;
-import app.model.Product;
 import app.repositories.OrderRepository;
 import app.services.OrderService;
 import app.repositories.ProductRepository;
@@ -84,7 +83,18 @@ public class OrderController {
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
-        orderService.confirmOrderPayment(order.get());
+        orderService.onOrderPaid(order.get());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/order/{id}/confirmed")
+    ResponseEntity<Order> updateConfirmationStatus(@PathVariable Long id, @RequestParam Boolean value) {
+        Optional<Order> order = orderRepository.findById(id);
+        if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+        orderService.onOrderConfirmed(order.get());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
