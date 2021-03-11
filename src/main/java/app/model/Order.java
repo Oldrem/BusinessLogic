@@ -1,9 +1,6 @@
 package app.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -13,41 +10,30 @@ public class Order {
     private @Id @GeneratedValue Long orderId;
     private String clientName;
     private String clientLastName;
-    private Long productId;
+    @ManyToOne
+    @JoinColumn(name = "productId", nullable = false)
+    private Product product;
     private String fullAddress;
     private String methodOfDelivery;
-    private LocalDateTime date;
+    private LocalDateTime creationDate;
+    private LocalDateTime confirmationDate;
     private Boolean isConfirmed;
+    private Boolean isCanceled;
+    private Boolean isPayed;
 
-    public Order() {}
+    private Order() {}
 
-    public Order(String clientName, String clientLastName, Long productId, String fullAddress, String methodOfDelivery, LocalDateTime date, Boolean isConfirmed) {
+    public Order(String clientName, String clientLastName, Product product, String fullAddress, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, Boolean isConfirmed, Boolean isCanceled, Boolean isPayed) {
         this.clientName = clientName;
         this.clientLastName = clientLastName;
-        this.productId = productId;
+        this.product = product;
         this.fullAddress = fullAddress;
         this.methodOfDelivery = methodOfDelivery;
-        this.date = date;
+        this.creationDate = creationDate;
+        this.confirmationDate = confirmationDate;
         this.isConfirmed = isConfirmed;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return orderId.equals(order.orderId) &&
-                Objects.equals(clientName, order.clientName) &&
-                Objects.equals(clientLastName, order.clientLastName) &&
-                productId.equals(order.productId) &&
-                Objects.equals(fullAddress, order.fullAddress) &&
-                Objects.equals(methodOfDelivery, order.methodOfDelivery) &&
-                Objects.equals(isConfirmed, order.isConfirmed);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(orderId, clientName, clientLastName, productId, fullAddress, methodOfDelivery, isConfirmed);
+        this.isCanceled = isCanceled;
+        this.isPayed = isPayed;
     }
 
     public Long getOrderId() {
@@ -74,12 +60,12 @@ public class Order {
         this.clientLastName = clientLastName;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public String getFullAddress() {
@@ -98,12 +84,20 @@ public class Order {
         this.methodOfDelivery = methodOfDelivery;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getConfirmationDate() {
+        return confirmationDate;
+    }
+
+    public void setConfirmationDate(LocalDateTime confirmationDate) {
+        this.confirmationDate = confirmationDate;
     }
 
     public Boolean getConfirmed() {
@@ -112,5 +106,21 @@ public class Order {
 
     public void setConfirmed(Boolean confirmed) {
         isConfirmed = confirmed;
+    }
+
+    public Boolean getCanceled() {
+        return isCanceled;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        isCanceled = canceled;
+    }
+
+    public Boolean getPayed() {
+        return isPayed;
+    }
+
+    public void setPayed(Boolean payed) {
+        isPayed = payed;
     }
 }
