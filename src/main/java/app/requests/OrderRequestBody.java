@@ -1,5 +1,6 @@
 package app.requests;
 
+import app.model.DeliveryMethod;
 import app.model.Order;
 import app.model.Product;
 import app.repositories.ProductRepository;
@@ -21,6 +22,9 @@ public class OrderRequestBody
         Optional<Product> p = productRepository.findById(productId);
         if (!p.isPresent())
             throw new ProductBookingException("Invalid product ID");
+
+        if (DeliveryMethod.fromText(methodOfDelivery) == null)
+            throw new ProductBookingException("Invalid delivery method");
 
         Product product = p.get();
         return new Order(clientName, clientLastName, product, fullAddress, methodOfDelivery,

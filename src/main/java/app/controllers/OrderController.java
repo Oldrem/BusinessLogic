@@ -86,10 +86,12 @@ public class OrderController {
         Optional<Order> optionalOrder = orderRepository.findById(id);
         if (!optionalOrder.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
         Order order = optionalOrder.get();
         order.setConfirmed(true);
         order.setConfirmationDate(LocalDateTime.now());
         orderRepository.save(order);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -100,6 +102,7 @@ public class OrderController {
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
         order.get().setReceived(true);
+        orderRepository.save(order.get());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
