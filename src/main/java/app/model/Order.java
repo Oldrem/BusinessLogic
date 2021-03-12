@@ -2,7 +2,6 @@ package app.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(name="client_order")
@@ -13,7 +12,7 @@ public class Order {
     @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     @JoinColumn(name = "productId", nullable = false)
     private Product product;
-    private String fullAddress;
+    private String deliveryInfo;
     private String methodOfDelivery;
     private LocalDateTime creationDate;
     private LocalDateTime confirmationDate;
@@ -24,11 +23,11 @@ public class Order {
 
     public Order() {}
 
-    public Order(String clientName, String clientLastName, Product product, String fullAddress, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, Boolean isConfirmed, Boolean isCanceled, Boolean isPayed, Boolean isReceived) {
+    public Order(String clientName, String clientLastName, Product product, String deliveryInfo, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, Boolean isConfirmed, Boolean isCanceled, Boolean isPayed, Boolean isReceived) {
         this.clientName = clientName;
         this.clientLastName = clientLastName;
         this.product = product;
-        this.fullAddress = fullAddress;
+        this.deliveryInfo = deliveryInfo;
         this.methodOfDelivery = methodOfDelivery;
         this.creationDate = creationDate;
         this.confirmationDate = confirmationDate;
@@ -70,12 +69,12 @@ public class Order {
         this.product = product;
     }
 
-    public String getFullAddress() {
-        return fullAddress;
+    public String getDeliveryInfo() {
+        return deliveryInfo;
     }
 
-    public void setFullAddress(String fullAddress) {
-        this.fullAddress = fullAddress;
+    public void setDeliveryInfo(String fullAddress) {
+        this.deliveryInfo = fullAddress;
     }
 
     public String getMethodOfDelivery() {

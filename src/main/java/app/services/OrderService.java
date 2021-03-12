@@ -1,5 +1,7 @@
 package app.services;
 
+import app.model.DeliveryRequest;
+import app.repositories.DeliveryRequestRepository;
 import app.requests.OrderRequestBody;
 import app.model.Order;
 import app.model.Product;
@@ -22,11 +24,13 @@ public class OrderService
 
     private OrderRepository orders;
     private ProductRepository products;
+    private DeliveryRequestRepository deliveries;
 
     @Autowired
-    public void setData(OrderRepository orders, ProductRepository products) {
+    public void setData(OrderRepository orders, ProductRepository products, DeliveryRequestRepository deliveries) {
         this.orders = orders;
         this.products = products;
+        this.deliveries = deliveries;
     }
 
 
@@ -37,9 +41,14 @@ public class OrderService
         Product product = order.getProduct();
         product.setBookedAmount(product.getBookedAmount() - 1);
         product.setAmount(product.getAmount() - 1);
+        if (order.getMethodOfDelivery().equals("courier")){
+            DeliveryRequest request = deliveries.save(new DeliveryRequest(order, "На складе", "Требуется назначить курьера"));
+        }
+        if (order.getMethodOfDelivery().equals("takeout")){
+            DeliveryRequest request = deliveries.save(new DeliveryRequest(order, "На складе", null));
+        }
         orders.save(order);
         products.save(product);
-        //TODO start delivery
     }
 
     @Transactional
