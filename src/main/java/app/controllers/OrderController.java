@@ -1,10 +1,9 @@
 package app.controllers;
 
-import app.requests.OrderRequestBody;
 import app.model.Order;
 import app.repositories.OrderRepository;
+import app.requests.OrderRequestBody;
 import app.services.OrderService;
-import app.services.ProductBookingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,17 +42,17 @@ public class OrderController {
     @PostMapping("/order")
     ResponseEntity<Order> createOrder(@Valid @RequestBody OrderRequestBody rawOrder) throws URISyntaxException
     {
-        try
+        //try
         {
             Order result = orderService.startAddOrderTransaction(rawOrder);
             return ResponseEntity.created(new URI("/order/" + result.getOrderId()))
                     .body(result);
         }
-        catch (ProductBookingException e)
-        {
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
-        }
+        //catch (ProductBookingException e)
+        //{
+        //    System.out.println(e.getMessage());
+        //    return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+        //}
     }
 
     @PutMapping("/order/{id}")
