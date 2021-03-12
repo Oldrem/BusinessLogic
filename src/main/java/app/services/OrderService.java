@@ -37,6 +37,9 @@ public class OrderService
     @Transactional
     public void startOnOrderPaidTransaction(Order order)
     {
+        if (!order.getConfirmed())
+            throw new OrderPaymentException("Order has not been confirmed yet");
+
         order.setPayed(true);
         Product product = order.getProduct();
         product.setBookedAmount(product.getBookedAmount() - 1);
