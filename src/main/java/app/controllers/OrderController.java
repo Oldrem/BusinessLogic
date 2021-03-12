@@ -94,7 +94,7 @@ public class OrderController {
     }
 
     @PutMapping("/order/{id}/received")
-    ResponseEntity<Order> updateReceivedStatus(@PathVariable Long id, @RequestParam Boolean value) {
+    ResponseEntity<Order> updateReceivedStatus(@PathVariable Long id, @RequestBody Boolean value) {
         Optional<Order> order = orderRepository.findById(id);
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
