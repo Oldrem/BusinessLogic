@@ -43,7 +43,6 @@ public class OrderController {
     @PostMapping("/order")
     ResponseEntity<Order> createOrder(@Valid @RequestBody OrderRequestBody rawOrder) throws URISyntaxException
     {
-        System.out.println(rawOrder.getProductId());
         try
         {
             Order result = orderService.startAddOrderTransaction(rawOrder);

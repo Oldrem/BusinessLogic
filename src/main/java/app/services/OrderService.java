@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @EnableScheduling
 public class OrderService
 {
-    public static final Duration cancelPeriod = Duration.ofDays(1);
+    public static final Duration cancelPeriod = Duration.ofSeconds(30);
 
     private OrderRepository orders;
     private ProductRepository products;
@@ -64,9 +64,10 @@ public class OrderService
         int cancelled = 0;
 
         for (Order order : orders.findAll()) {
-            if (order.getConfirmed() && !order.getPayed() && isOverCancelTime(order.getConfirmationDate()))
+            if (order.getConfirmed() && !order.getCanceled() && !order.getPayed() && isOverCancelTime(order.getConfirmationDate()))
             {
                 order.setCanceled(true);
+                orders.save(order);
                 System.out.println("Cancelling order #" + order.getOrderId() + " - payment is overdue");
                 cancelled++;
             }
