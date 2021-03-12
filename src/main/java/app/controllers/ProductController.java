@@ -42,7 +42,10 @@ public class ProductController {
     }
 
     @PutMapping("/product/{id}")
-    ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product) {
+    ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) {
+        if (!productRepository.existsById(id))
+            throw new RuntimeException("Invalid DeliveryRequestId");
+        product.setId(id);
         Product result = productRepository.save(product);
         return ResponseEntity.ok().body(result);
     }
