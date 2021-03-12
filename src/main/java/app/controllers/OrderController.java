@@ -1,10 +1,9 @@
 package app.controllers;
 
-import app.controllers.helpers.OrderRequestBody;
+import app.requests.OrderRequestBody;
 import app.model.Order;
 import app.repositories.OrderRepository;
 import app.services.OrderService;
-import app.repositories.ProductRepository;
 import app.services.ProductBookingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package app.controllers.helpers;
+package app.requests;
 
 import app.model.Order;
 import app.model.Product;

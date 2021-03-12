@@ -1,6 +1,6 @@
 package app.services;
 
-import app.controllers.helpers.OrderRequestBody;
+import app.requests.OrderRequestBody;
 import app.model.Order;
 import app.model.Product;
 import app.repositories.OrderRepository;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service("orderService")
 @EnableScheduling
