@@ -38,6 +38,8 @@ public class OrderService
         Product product = order.getProduct();
         product.setBookedAmount(product.getBookedAmount() - 1);
         product.setAmount(product.getAmount() - 1);
+        orders.save(order);
+        products.save(product);
         //TODO start delivery
     }
 
@@ -50,6 +52,7 @@ public class OrderService
         product.setBookedAmount(order.getProduct().getBookedAmount() + 1);
         if (product.getAmount() < product.getBookedAmount())
             throw new ProductBookingException("This product is either unavailable or fully booked");
+        products.save(product);
         return orders.save(order);
     }
 

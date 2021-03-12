@@ -44,6 +44,7 @@ public class OrderController {
     @PostMapping("/order")
     ResponseEntity<Order> createOrder(@Valid @RequestBody OrderRequestBody rawOrder) throws URISyntaxException
     {
+        System.out.println(rawOrder.getProductId());
         try
         {
             Order result = orderService.startAddOrderTransaction(rawOrder);
@@ -71,7 +72,7 @@ public class OrderController {
 
 
     @PutMapping("/order/{id}/payed")
-    ResponseEntity<Order> updatePayedStatus(@PathVariable Long id, @RequestParam Boolean value) {
+    ResponseEntity<Order> updatePayedStatus(@PathVariable Long id, @RequestBody Boolean value) {
         Optional<Order> order = orderRepository.findById(id);
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
@@ -82,14 +83,14 @@ public class OrderController {
     }
 
     @PutMapping("/order/{id}/confirmed")
-    ResponseEntity<Order> updateConfirmationStatus(@PathVariable Long id, @RequestParam Boolean value) {
-        Optional<Order> order = orderRepository.findById(id);
-        if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    ResponseEntity<Order> updateConfirmationStatus(@PathVariable Long id, @RequestBody Boolean value) {
+        Optional<Order> optionalOrder = orderRepository.findById(id);
+        if (!optionalOrder.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-        order.get().setConfirmed(true);
-        order.get().setConfirmationDate(LocalDateTime.now());
-
+        Order order = optionalOrder.get();
+        order.setConfirmed(true);
+        order.setConfirmationDate(LocalDateTime.now());
+        orderRepository.save(order);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
