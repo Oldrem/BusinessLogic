@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @EnableScheduling
 public class OrderService
 {
-    public static final Duration cancelPeriod = Duration.ofSeconds(30);
+    public static final Duration cancelPeriod = Duration.ofDays(1);
 
     private OrderRepository orders;
     private ProductRepository products;
