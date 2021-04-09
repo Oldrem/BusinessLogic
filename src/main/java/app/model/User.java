@@ -56,7 +56,7 @@ public class User
     }
 
     public String[] getRolesAsStringArray() {
-        return (String[]) roles.stream().map(r -> r.getName()).toArray();
+        return roles.stream().map(Role::getName).toArray(String[]::new);
     }
 
     public void setRoles(Collection<Role> roles) {

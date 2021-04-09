@@ -59,6 +59,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\src\main\java\app\security\jwt\JwtAuthenticationFilter.java">
+          <value>
+            <Attribute>
+              <option name="separator" value=";" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\src\main\java\app\security\jwt\JwtAuthorizationFilter.java">
+          <value>
+            <Attribute>
+              <option name="separator" value=";" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\src\main\java\app\services\OrderService.java">
           <value>
             <Attribute>

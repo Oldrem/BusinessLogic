@@ -1,8 +1,10 @@
 package app.security;
 
-import app.security.jwt.JWTAuthenticationFilter;
-import app.security.jwt.JWTAuthorizationFilter;
+import app.repositories.UserRepository;
+import app.security.jwt.JwtAuthenticationFilter;
+import app.security.jwt.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,17 +17,23 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter
+{
+    @Value("${jwt.secret}")
+    private String jwtSecret;
 
     private final UserDetailsProvider userDetails;
+
+    private UserRepository users;
 
     @Bean
     public BCryptPasswordEncoder getEncoder(){
         return new BCryptPasswordEncoder();
     }
 
-    public SecurityConfig(UserDetailsProvider userDetailsProvider) {
+    public SecurityConfig(UserDetailsProvider userDetailsProvider, UserRepository users) {
         this.userDetails = userDetailsProvider;
+        this.users = users;
     }
 
     @Override
@@ -50,10 +58,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .anyRequest().authenticated()
             .and()
                 .csrf().disable()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtSecret))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtSecret, users))
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+                .httpBasic().disable();
     }
 
     @Autowired
