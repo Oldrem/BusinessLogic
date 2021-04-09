@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
                 .antMatchers(HttpMethod.GET, "/api/products", "/api/product/**").permitAll() // Anyone can view products
                 .antMatchers(HttpMethod.POST, "/api/order").permitAll() // Anyone can create a new order
+                .antMatchers(HttpMethod.POST, "/api/login").permitAll() // Anyone can login lol
 
                 .antMatchers(HttpMethod.GET, "/api/orders", "/api/order/**").hasRole("STOREFRONT")
                 .antMatchers(HttpMethod.POST, "/api/deliveryRequest").hasRole("STOREFRONT") // SF can request delivery
