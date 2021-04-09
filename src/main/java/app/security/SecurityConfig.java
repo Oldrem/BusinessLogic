@@ -26,14 +26,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 
     private UserRepository users;
 
+
+    public SecurityConfig(UserDetailsProvider userDetailsProvider, UserRepository users) {
+        this.userDetails = userDetailsProvider;
+        this.users = users;
+    }
+
+
     @Bean
     public BCryptPasswordEncoder getEncoder(){
         return new BCryptPasswordEncoder();
     }
 
-    public SecurityConfig(UserDetailsProvider userDetailsProvider, UserRepository users) {
-        this.userDetails = userDetailsProvider;
-        this.users = users;
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetails)
+                .passwordEncoder(getEncoder());
     }
 
     @Override
@@ -64,12 +73,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .httpBasic().disable();
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(userDetails)
-                .passwordEncoder(getEncoder());
     }
 }
