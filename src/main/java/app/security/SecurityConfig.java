@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers(HttpMethod.POST, "/api/login").permitAll() // Anyone can login lol
 
                 .antMatchers(HttpMethod.POST, "/api/deliveryRequest").hasAuthority("DELIVERY_START")
-                .antMatchers("/api/deliveryRequests", "/api/deliveryRequest/**").hasAuthority("DELIVERY_FULL_CONTROL")
+                .antMatchers("/api/deliveryRequests", "/api/deliveryRequest/{\\d+}/**").hasAuthority("DELIVERY_FULL_CONTROL")
 
                 .antMatchers(HttpMethod.GET, "/api/orders", "/api/order/{\\d+}/**").hasAuthority("ORDERS_READ")
                 .antMatchers(HttpMethod.PUT, "/api/order/{\\d+}/received").hasAuthority("ORDERS_CONFIRM_FINISH")
