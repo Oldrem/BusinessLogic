@@ -2,6 +2,7 @@ package app.requests;
 
 import app.model.DeliveryMethod;
 import app.model.Order;
+import app.model.OrderStatus;
 import app.model.Product;
 import app.repositories.ProductRepository;
 import app.services.ProductBookingException;
@@ -29,7 +30,7 @@ public class OrderRequestBody
         Product product = p.get();
         return new Order(clientName, clientLastName, product, fullAddress, methodOfDelivery,
                 LocalDateTime.now(), null,
-                false, false, false, false);
+                OrderStatus.NEW);
     }
 
     public String getClientName() {

@@ -1,6 +1,7 @@
 package app.services;
 
 import app.model.DeliveryRequest;
+import app.model.OrderStatus;
 import app.repositories.DeliveryRequestRepository;
 import app.requests.OrderRequestBody;
 import app.model.Order;
@@ -43,11 +44,11 @@ public class OrderService
 
     public void startOnOrderPaidTransaction(Order order)
     {
-        if (!order.getConfirmed())
+        if (!order.getStatus().getText().equals("confirmed"))
             throw new OrderPaymentException("Order has not been confirmed yet");
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                order.setPayed(true);
+                order.setStatus(OrderStatus.PAYED);
                 Product product = order.getProduct();
                 product.setBookedAmount(product.getBookedAmount() - 1);
                 product.setAmount(product.getAmount() - 1);
@@ -90,9 +91,9 @@ public class OrderService
         int cancelled = 0;
 
         for (Order order : orders.findAll()) {
-            if (order.getConfirmed() && !order.getCanceled() && !order.getPayed() && isOverCancelTime(order.getConfirmationDate()))
+            if (order.getStatus().getText().equals("confirmed") && isOverCancelTime(order.getConfirmationDate()))
             {
-                order.setCanceled(true);
+                order.setStatus(OrderStatus.CANCELED);
                 orders.save(order);
                 System.out.println("Cancelling order #" + order.getOrderId() + " - payment is overdue");
                 cancelled++;

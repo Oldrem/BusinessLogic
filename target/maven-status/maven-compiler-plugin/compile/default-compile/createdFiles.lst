@@ -1,8 +1,9 @@
+app\model\security\User.class
+app\model\OrderStatusConverter.class
 app\Main.class
 app\services\ProductBookingException.class
 app\repositories\OrderRepository.class
 app\services\OrderService.class
-app\model\Role.class
 app\repositories\UserRepository.class
 app\repositories\RoleRepository.class
 app\controllers\OrderController.class
@@ -10,13 +11,15 @@ app\requests\OrderRequestBody.class
 app\repositories\ProductRepository.class
 app\controllers\ProductController.class
 app\services\OrderService$1.class
+app\model\security\Role.class
 app\security\SecurityConfig.class
+app\model\OrderStatus.class
 app\model\Order.class
 app\model\DeliveryMethod.class
 app\controllers\DeliveryRequestController.class
-app\model\User.class
 app\repositories\DeliveryRequestRepository.class
 app\services\OrderPaymentException.class
+app\model\security\Permission.class
 app\security\jwt\JwtAuthorizationFilter.class
 app\model\DeliveryRequest.class
 app\security\jwt\JwtAuthenticationFilter.class
