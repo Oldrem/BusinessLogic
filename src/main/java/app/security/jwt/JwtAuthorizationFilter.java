@@ -34,7 +34,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         this.users = users;
     }
 
-    public UsernamePasswordAuthenticationToken parseToken(HttpServletRequest request) {
+    private UsernamePasswordAuthenticationToken parseToken(HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (token != null && token.startsWith("Bearer ")) {
             String claims = token.replace("Bearer ", "");
