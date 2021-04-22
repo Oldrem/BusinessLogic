@@ -1,6 +1,7 @@
 package app.model.security;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Collection;
 
 @Entity
@@ -25,9 +26,10 @@ public class Role {
                     name = "permission_id", referencedColumnName = "id"))
     private Collection<Permission> permissions;
 
-    public Role(String name)
+    public Role(String name, Permission... permissions)
     {
         this.name = name;
+        this.permissions = Arrays.asList(permissions);
     }
 
     public Role() { }
@@ -38,5 +40,13 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Collection<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(Collection<Permission> permissions) {
+        this.permissions = permissions;
     }
 }

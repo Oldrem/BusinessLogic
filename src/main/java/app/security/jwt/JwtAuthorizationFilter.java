@@ -1,5 +1,6 @@
 package app.security.jwt;
 
+import app.model.security.Role;
 import app.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -17,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,8 +51,11 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
                 List<SimpleGrantedAuthority> authorities = users.getOne(username).getRoles()
                         .stream()
-                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getName()))
+                        .map(Role::getPermissions).flatMap(Collection::stream)
+                        .map(p -> new SimpleGrantedAuthority(p.getName()))
                         .collect(Collectors.toList());
+
+                authorities.forEach(System.out::println);
 
                 return new UsernamePasswordAuthenticationToken(username, null, authorities);
             }

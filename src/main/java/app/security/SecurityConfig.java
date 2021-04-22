@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
     @Value("${jwt.secret}")
@@ -55,14 +53,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers(HttpMethod.POST, "/api/order").permitAll() // Anyone can create a new order
                 .antMatchers(HttpMethod.POST, "/api/login").permitAll() // Anyone can login lol
 
-                .antMatchers(HttpMethod.GET, "/api/orders", "/api/order/**").hasRole("STOREFRONT")
-                .antMatchers(HttpMethod.POST, "/api/deliveryRequest").hasRole("STOREFRONT") // SF can request delivery
-                .antMatchers(HttpMethod.PUT, "/api/product/**").hasRole("STOREFRONT") // SF can request a booking
-                .antMatchers(HttpMethod.PUT, "/api/order/**/received").hasRole("STOREFRONT") // SF can confirm a finished order
+                .antMatchers(HttpMethod.POST, "/api/deliveryRequest").hasAuthority("DELIVERY_START")
+                .antMatchers("/api/deliveryRequests", "/api/deliveryRequest/**").hasAuthority("DELIVERY_FULL_CONTROL")
 
-                .antMatchers("/api/deliveryRequests", "/api/deliveryRequest/**").hasRole("DELIVERY_DEPT")
+                .antMatchers(HttpMethod.GET, "/api/orders", "/api/order/**").hasAuthority("ORDERS_READ")
+                .antMatchers(HttpMethod.PUT, "/api/order/**/received").hasAuthority("ORDERS_CONFIRM_FINISH")
+                .antMatchers(HttpMethod.PUT, "/api/order/**/payed").hasAuthority("ORDERS_CONFIRM_PAYMENT")
+                .antMatchers("/api/orders", "/api/order/**").hasAuthority("ORDERS_FULL_CONTROL")
 
-                .antMatchers("/api/order/**/payed").hasRole("PAYMENT_SYSTEM") // Payment system can confirm we received money
+                .antMatchers(HttpMethod.PUT, "/api/product/**").hasAuthority("PRODUCTS_MODIFY")
+                .antMatchers("/api/products", "/api/product/**").hasAuthority("PRODUCTS_FULL_CONTROL")
+
 
                 .anyRequest().authenticated()
             .and()
