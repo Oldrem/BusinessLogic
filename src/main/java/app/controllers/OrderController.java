@@ -27,6 +27,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    //@PreAuthorize("hasAnyAuthority('STOREFRONT', 'ADMIN')")
     @GetMapping("/orders")
     Collection<Order> orders() {
         return (Collection<Order>) orderRepository.findAll();

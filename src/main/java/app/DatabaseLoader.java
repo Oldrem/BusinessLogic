@@ -1,8 +1,8 @@
 package app;
 
 import app.model.Product;
-import app.model.Role;
-import app.model.User;
+import app.model.security.Role;
+import app.model.security.User;
 import app.repositories.ProductRepository;
 import app.repositories.RoleRepository;
 import app.repositories.UserRepository;

@@ -1,4 +1,4 @@
-package app.model;
+package app.model.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

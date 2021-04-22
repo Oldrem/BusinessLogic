@@ -1,4 +1,4 @@
-package app.model;
+package app.model.security;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -12,8 +12,18 @@ public class Role {
     private Long id;
 
     private String name;
+
     @ManyToMany(mappedBy = "roles")
     private Collection<User> users;
+
+    @ManyToMany
+    @JoinTable(
+            name = "role_permissions",
+            joinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "permission_id", referencedColumnName = "id"))
+    private Collection<Permission> permissions;
 
     public Role(String name)
     {

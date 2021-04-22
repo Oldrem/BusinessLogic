@@ -1,6 +1,6 @@
 package app.security;
 
-import app.model.User;
+import app.model.security.User;
 import app.repositories.UserRepository;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.*;

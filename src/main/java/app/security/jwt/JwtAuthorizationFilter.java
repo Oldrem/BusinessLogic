@@ -49,7 +49,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
                 List<SimpleGrantedAuthority> authorities = users.getOne(username).getRoles()
                         .stream()
-                        .map(r -> new SimpleGrantedAuthority(r.getName()))
+                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getName()))
                         .collect(Collectors.toList());
 
                 return new UsernamePasswordAuthenticationToken(username, null, authorities);
