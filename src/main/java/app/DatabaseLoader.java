@@ -40,6 +40,7 @@ public class DatabaseLoader implements CommandLineRunner {
         Permission p_ordersRead = permissions.save(new Permission("ORDERS_READ"));
         Permission p_ordersConfirmFinish = permissions.save(new Permission("ORDERS_CONFIRM_FINISH"));
         Permission p_ordersConfirmPayment = permissions.save(new Permission("ORDERS_CONFIRM_PAYMENT"));
+        Permission p_ordersConfirmLegitimacy = permissions.save(new Permission("ORDERS_CONFIRM_LEGITIMACY"));
 
         Permission p_deliveryFullControl = permissions.save(new Permission("DELIVERY_FULL_CONTROL"));
         Permission p_deliveryStart = permissions.save(new Permission("DELIVERY_START"));
@@ -47,13 +48,15 @@ public class DatabaseLoader implements CommandLineRunner {
         Permission p_productsFullControl = permissions.save(new Permission("PRODUCTS_FULL_CONTROL"));
         Permission p_productsModify = permissions.save(new Permission("PRODUCTS_MODIFY"));
 
-        //permissions.flush();
 
-
-        Role role_admin = roles.save(new Role("ADMIN", permissions.findAll().toArray(new Permission[0])));
-        Role role_storefront = roles.save(new Role("STOREFRONT", p_ordersRead, p_deliveryStart, p_productsModify, p_ordersConfirmFinish));
-        Role role_delivery = roles.save(new Role("DELIVERY_DEPT", p_deliveryFullControl));
-        Role role_money = roles.save(new Role("PAYMENT_SYSTEM", p_ordersConfirmPayment));
+        Role role_admin = roles.save(new Role("ADMIN",
+                permissions.findAll().toArray(new Permission[0]))); // Admins get all permissions B)
+        Role role_storefront = roles.save(new Role("STOREFRONT",
+                p_ordersRead, p_deliveryStart, p_productsModify, p_ordersConfirmFinish, p_ordersConfirmLegitimacy));
+        Role role_delivery = roles.save(new Role("DELIVERY_DEPT",
+                p_deliveryFullControl));
+        Role role_money = roles.save(new Role("PAYMENT_SYSTEM",
+                p_ordersConfirmPayment));
 
 
         User admin = users.save(new User("admin", "123", role_admin));

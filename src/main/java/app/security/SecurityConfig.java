@@ -59,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .antMatchers(HttpMethod.GET, "/api/orders", "/api/order/**").hasAuthority("ORDERS_READ")
                 .antMatchers(HttpMethod.PUT, "/api/order/**/received").hasAuthority("ORDERS_CONFIRM_FINISH")
                 .antMatchers(HttpMethod.PUT, "/api/order/**/payed").hasAuthority("ORDERS_CONFIRM_PAYMENT")
+                .antMatchers(HttpMethod.PUT, "/api/order/**/confirmed").hasAuthority("ORDERS_CONFIRM_LEGITIMACY")
                 .antMatchers("/api/orders", "/api/order/**").hasAuthority("ORDERS_FULL_CONTROL")
 
                 .antMatchers(HttpMethod.PUT, "/api/product/**").hasAuthority("PRODUCTS_MODIFY")
