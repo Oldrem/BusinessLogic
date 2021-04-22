@@ -1,6 +1,7 @@
 package app.controllers;
 
 import app.model.Order;
+import app.model.OrderStatus;
 import app.repositories.OrderRepository;
 import app.requests.OrderRequestBody;
 import app.services.OrderService;
@@ -86,7 +87,7 @@ public class OrderController {
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
         Order order = optionalOrder.get();
-        order.setConfirmed(true);
+        order.setStatus(OrderStatus.CONFIRMED);
         order.setConfirmationDate(LocalDateTime.now());
         orderRepository.save(order);
 
@@ -99,7 +100,7 @@ public class OrderController {
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
-        order.get().setReceived(true);
+        order.get().setStatus(OrderStatus.RECEIVED);
         orderRepository.save(order.get());
 
         return new ResponseEntity<>(HttpStatus.OK);

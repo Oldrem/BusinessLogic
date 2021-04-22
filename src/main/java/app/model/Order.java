@@ -16,14 +16,15 @@ public class Order {
     private String methodOfDelivery;
     private LocalDateTime creationDate;
     private LocalDateTime confirmationDate;
-    private Boolean isConfirmed;
-    private Boolean isCanceled;
-    private Boolean isPayed;
-    private Boolean isReceived;
+    private OrderStatus status;
+    //private Boolean isConfirmed;
+    //private Boolean isCanceled;
+    //private Boolean isPayed;
+    //private Boolean isReceived;
 
     public Order() {}
 
-    public Order(String clientName, String clientLastName, Product product, String deliveryInfo, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, Boolean isConfirmed, Boolean isCanceled, Boolean isPayed, Boolean isReceived) {
+    public Order(String clientName, String clientLastName, Product product, String deliveryInfo, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, OrderStatus status) {
         this.clientName = clientName;
         this.clientLastName = clientLastName;
         this.product = product;
@@ -31,10 +32,13 @@ public class Order {
         this.methodOfDelivery = methodOfDelivery;
         this.creationDate = creationDate;
         this.confirmationDate = confirmationDate;
+        this.status = status;
+        /*
         this.isConfirmed = isConfirmed;
         this.isCanceled = isCanceled;
         this.isPayed = isPayed;
         this.isReceived = isReceived;
+         */
     }
 
     public Long getOrderId() {
@@ -101,6 +105,15 @@ public class Order {
         this.confirmationDate = confirmationDate;
     }
 
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    /*
     public Boolean getConfirmed() {
         return isConfirmed;
     }
@@ -132,4 +145,5 @@ public class Order {
     public void setReceived(Boolean received) {
         isReceived = received;
     }
+     */
 }
