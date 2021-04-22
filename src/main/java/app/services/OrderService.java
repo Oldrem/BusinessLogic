@@ -1,24 +1,22 @@
 package app.services;
 
 import app.model.DeliveryRequest;
-import app.model.OrderStatus;
-import app.repositories.DeliveryRequestRepository;
-import app.requests.OrderRequestBody;
 import app.model.Order;
+import app.model.OrderStatus;
 import app.model.Product;
+import app.repositories.DeliveryRequestRepository;
 import app.repositories.OrderRepository;
 import app.repositories.ProductRepository;
+import app.requests.OrderRequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -69,17 +67,13 @@ public class OrderService
     {
         Order order = rawOrder.constructOrder(products);
         Product product = order.getProduct();
-        try {
-         return transactionTemplate.execute(status -> {
-             product.setBookedAmount(order.getProduct().getBookedAmount() + 1);
-              if (product.getAmount() < product.getBookedAmount())
-                    throw new ProductBookingException("This product is either unavailable or fully booked");
-              products.save(product);
-              return orders.save(order);
-            });
-        }
-        catch (Exception ignored){};
-        return null;
+        return transactionTemplate.execute(status -> {
+            product.setBookedAmount(order.getProduct().getBookedAmount() + 1);
+            if (product.getAmount() < product.getBookedAmount())
+                throw new ProductBookingException("This product is either unavailable or fully booked");
+            products.save(product);
+            return orders.save(order);
+        });
     }
 
 
