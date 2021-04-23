@@ -50,7 +50,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
 
         Role role_admin = roles.save(new Role("ADMIN",
-                permissions.findAll().toArray(new Permission[0]))); // Admins get all permissions B)
+                p_ordersFullControl, p_deliveryFullControl, p_productsFullControl));
         Role role_storefront = roles.save(new Role("STOREFRONT",
                 p_ordersRead, p_deliveryStart, p_productsModify, p_ordersConfirmFinish, p_ordersConfirmLegitimacy));
         Role role_delivery = roles.save(new Role("DELIVERY_DEPT",

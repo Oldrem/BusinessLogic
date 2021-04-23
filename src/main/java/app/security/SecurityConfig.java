@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     }
 
     @Autowired
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(userDetails)
                 .passwordEncoder(getEncoder());
