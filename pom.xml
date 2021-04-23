@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>WebDev4</groupId>
+    <groupId>WebDev2</groupId>
     <artifactId>Lab4</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
@@ -32,8 +32,8 @@
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

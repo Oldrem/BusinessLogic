@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -32,7 +33,7 @@ public class OrderService
     private TransactionTemplate transactionTemplate;
 
     @Autowired
-    public void setData(OrderRepository orders, ProductRepository products, DeliveryRequestRepository deliveries, PlatformTransactionManager transactionManager) {
+    public void setData(OrderRepository orders, ProductRepository products, DeliveryRequestRepository deliveries, JtaTransactionManager transactionManager) {
         this.orders = orders;
         this.products = products;
         this.deliveries = deliveries;
@@ -69,9 +70,9 @@ public class OrderService
         Product product = order.getProduct();
         return transactionTemplate.execute(status -> {
             product.setBookedAmount(order.getProduct().getBookedAmount() + 1);
+            products.save(product);
             if (product.getAmount() < product.getBookedAmount())
                 throw new ProductBookingException("This product is either unavailable or fully booked");
-            products.save(product);
             return orders.save(order);
         });
     }
