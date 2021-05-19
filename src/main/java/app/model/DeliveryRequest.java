@@ -3,8 +3,10 @@ package app.model;
 import javax.persistence.*;
 
 @Entity
-public class DeliveryRequest {
-    private @Id @GeneratedValue Long deliveryRequestId;
+public class DeliveryRequest
+{
+    @Id @GeneratedValue
+    private Long deliveryRequestId;
     @OneToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     private Order order;
     private String deliveryStatus;
