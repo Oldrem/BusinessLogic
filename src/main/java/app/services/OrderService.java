@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -36,7 +37,7 @@ public class OrderService
     public void setData(OrderRepository orders,
                         ProductRepository products,
                         DeliveryRequestRepository deliveries,
-                        JtaTransactionManager transactionManager,
+                        PlatformTransactionManager transactionManager,
                         CourierService courierService)
     {
         this.orders = orders;
