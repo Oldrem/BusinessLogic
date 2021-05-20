@@ -1,8 +1,9 @@
 package app.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public enum OrderStatus {
+public enum OrderStatus implements Serializable {
     NEW("new"),
     CONFIRMED("confirmed"),
     PAYED("payed"),

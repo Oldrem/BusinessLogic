@@ -1,4 +1,4 @@
-package app.jms;
+/*package app.jms;
 
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.qpid.jms.JmsConnectionFactory;
@@ -28,4 +28,4 @@ public class JmsConfig {
         factory.setConnectionFactory(jmsConnection());
         return factory;
     }
-}
+} */

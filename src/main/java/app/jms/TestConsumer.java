@@ -1,4 +1,4 @@
-package app.jms;
+/*package app.jms;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.slf4j.Logger;
@@ -57,4 +57,4 @@ public class TestConsumer{
         }
     }
     */
-}
+//}

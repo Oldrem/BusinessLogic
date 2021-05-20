@@ -3,9 +3,10 @@ package app.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Entity
-public class Product {
+public class Product implements Serializable {
     private @Id @GeneratedValue Long productId;
     private String name;
     private int price;

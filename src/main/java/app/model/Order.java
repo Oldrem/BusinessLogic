@@ -1,11 +1,12 @@
 package app.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name="client_order")
-public class Order {
+public class Order implements Serializable {
     private @Id @GeneratedValue Long orderId;
     private String clientName;
     private String clientLastName;

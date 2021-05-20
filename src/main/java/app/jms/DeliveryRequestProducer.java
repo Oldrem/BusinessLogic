@@ -1,5 +1,6 @@
 package app.jms;
 
+import app.model.DeliveryRequest;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.config.JmsListenerContainerFactory;
@@ -7,9 +8,9 @@ import org.springframework.jms.core.JmsTemplate;
 import org.apache.qpid.jms.JmsConnectionFactory;
 import javax.jms.*;
 
-public class TestProducer implements Runnable {
+public class DeliveryRequestProducer {
 
-    public void run() {
+    public void sendMessage(DeliveryRequest request) {
         try {
             //ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("amqp://localhost:5672");
 
@@ -23,13 +24,10 @@ public class TestProducer implements Runnable {
             MessageProducer producer = session.createProducer(dest);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
-            // 10 test messages
-            for (int i = 1; i <= 10; i++) {
-                String msg = "Message #" + i;
-                TextMessage message = session.createTextMessage(msg);
-                System.out.println("Producer Sent: " + msg);
-                producer.send(message);
-            }
+            //TextMessage msg = session.createTextMessage(message);
+            ObjectMessage msg = session.createObjectMessage(request);
+            System.out.println("Producer sent: " + msg.toString());
+            producer.send(msg);
 
             session.close();
             connection.close();

@@ -1,5 +1,6 @@
 package app.services;
 
+import app.jms.DeliveryRequestProducer;
 import app.model.DeliveryRequest;
 import app.model.Order;
 import app.model.OrderStatus;
@@ -54,18 +55,15 @@ public class OrderService
                 Product product = order.getProduct();
                 product.setBookedAmount(product.getBookedAmount() - 1);
                 product.setAmount(product.getAmount() - 1);
-
-                DeliveryRequest request = new DeliveryRequest(order, "На складе", null);
-                if (order.getMethodOfDelivery().equals("courier"))
-                {
-                    request.setAssignedCourier(courierService.pickCourier());
-                }
-                deliveries.save(request);
-
                 orders.save(order);
                 products.save(product);
             }
         });
+
+        //Send jms message to delivery request service
+        DeliveryRequest request = new DeliveryRequest(order, "На складе", null);
+        DeliveryRequestProducer producer = new DeliveryRequestProducer();
+        producer.sendMessage(request);
     }
 
 

@@ -1,9 +1,10 @@
 package app.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class DeliveryRequest
+public class DeliveryRequest implements Serializable
 {
     @Id @GeneratedValue
     private Long deliveryRequestId;
