@@ -12,7 +12,7 @@ public class Product {
     private int amount;
     private int bookedAmount;
 
-    private Product (){}
+    public Product (){}
 
     public Product(String name, int price, int amount, int bookedAmount) {
         this.name = name;

@@ -5,7 +5,8 @@ import javax.persistence.Converter;
 import java.util.stream.Stream;
 
 @Converter(autoApply = true)
-public class OrderStatusConverter implements AttributeConverter<OrderStatus, String> {
+public class OrderStatusConverter implements AttributeConverter<OrderStatus, String>
+{
     @Override
     public String convertToDatabaseColumn(OrderStatus category) {
         if (category == null) {

@@ -1,6 +1,7 @@
 package app.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Courier
@@ -8,9 +9,20 @@ public class Courier
     @Id @GeneratedValue
     private Long courierId;
     private String name;
-    private String surname;
-    @OneToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
-    private DeliveryRequest assignedRequest;
+    private String lastName;
+    private boolean available;
+    @OneToMany(targetEntity=DeliveryRequest.class, mappedBy="assignedCourier")
+    private List<DeliveryRequest> requests;
+
+
+    public Courier() {}
+
+    public Courier(String name, String lastName, boolean available)
+    {
+        this.name = name;
+        this.lastName = lastName;
+        this.available = available;
+    }
 
 
     public Long getCourierId() {
@@ -29,19 +41,31 @@ public class Courier
         this.name = name;
     }
 
-    public String getSurname() {
-        return surname;
+    public boolean isAvailable() {
+        return available;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
-    public DeliveryRequest getAssignedRequest() {
-        return assignedRequest;
+    public List<DeliveryRequest> getRequests() {
+        return requests;
     }
 
-    public void setAssignedRequest(DeliveryRequest assignedRequest) {
-        this.assignedRequest = assignedRequest;
+    public List<DeliveryRequest> getActiveRequests() {
+        return null; // requests.stream().filter(); TODO
+    }
+
+    public void setRequests(List<DeliveryRequest> requests) {
+        this.requests = requests;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

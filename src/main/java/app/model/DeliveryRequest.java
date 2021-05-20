@@ -10,15 +10,19 @@ public class DeliveryRequest
     @OneToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     private Order order;
     private String deliveryStatus;
-    private String assignedCourier;
+    @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
+    @JoinColumn(name = "courierId", nullable = false)
+    private Courier assignedCourier;
+
 
     public DeliveryRequest(){}
 
-    public DeliveryRequest(Order order, String deliveryStatus, String assignedCourier) {
+    public DeliveryRequest(Order order, String deliveryStatus, Courier assignedCourier) {
         this.order = order;
         this.deliveryStatus = deliveryStatus;
         this.assignedCourier = assignedCourier;
     }
+
 
     public Long getDeliveryRequestId() {
         return deliveryRequestId;
@@ -44,11 +48,11 @@ public class DeliveryRequest
         this.deliveryStatus = deliveryStatus;
     }
 
-    public String getAssignedCourier() {
+    public Courier getAssignedCourier() {
         return assignedCourier;
     }
 
-    public void setAssignedCourier(String assignedCourier) {
+    public void setAssignedCourier(Courier assignedCourier) {
         this.assignedCourier = assignedCourier;
     }
 }

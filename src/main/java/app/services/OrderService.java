@@ -30,32 +30,44 @@ public class OrderService
     private ProductRepository products;
     private DeliveryRequestRepository deliveries;
     private TransactionTemplate transactionTemplate;
+    private CourierService courierService;
 
     @Autowired
-    public void setData(OrderRepository orders, ProductRepository products, DeliveryRequestRepository deliveries, PlatformTransactionManager transactionManager) {
+    public void setData(OrderRepository orders,
+                        ProductRepository products,
+                        DeliveryRequestRepository deliveries,
+                        PlatformTransactionManager transactionManager,
+                        CourierService courierService)
+    {
         this.orders = orders;
         this.products = products;
         this.deliveries = deliveries;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.courierService = courierService;
     }
 
 
     public void startOnOrderPaidTransaction(Order order)
     {
-        if (!order.getStatus().getText().equals("confirmed"))
+        if (order.getStatus() != OrderStatus.CONFIRMED)
             throw new OrderPaymentException("Order has not been confirmed yet");
-        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-            protected void doInTransactionWithoutResult(TransactionStatus status) {
+
+        transactionTemplate.execute(new TransactionCallbackWithoutResult()
+        {
+            protected void doInTransactionWithoutResult(TransactionStatus status)
+            {
                 order.setStatus(OrderStatus.PAYED);
                 Product product = order.getProduct();
                 product.setBookedAmount(product.getBookedAmount() - 1);
                 product.setAmount(product.getAmount() - 1);
-                if (order.getMethodOfDelivery().equals("courier")){
-                    DeliveryRequest request = deliveries.save(new DeliveryRequest(order, "На складе", "Требуется назначить курьера"));
+
+                DeliveryRequest request = new DeliveryRequest(order, "На складе", null);
+                if (order.getMethodOfDelivery().equals("courier"))
+                {
+                    request.setAssignedCourier(courierService.pickCourier());
                 }
-                if (order.getMethodOfDelivery().equals("takeout")){
-                    DeliveryRequest request = deliveries.save(new DeliveryRequest(order, "На складе", null));
-                }
+                deliveries.save(request);
+
                 orders.save(order);
                 products.save(product);
             }

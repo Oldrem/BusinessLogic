@@ -1,13 +1,11 @@
 package app;
 
+import app.model.Courier;
 import app.model.Product;
 import app.model.security.Permission;
 import app.model.security.Role;
 import app.model.security.User;
-import app.repositories.PermissionRepository;
-import app.repositories.ProductRepository;
-import app.repositories.RoleRepository;
-import app.repositories.UserRepository;
+import app.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -19,18 +17,24 @@ public class DatabaseLoader implements CommandLineRunner {
     private final UserRepository users;
     private final RoleRepository roles;
     private final PermissionRepository permissions;
+    private final CourierRepository couriers;
 
     @Autowired
-    public DatabaseLoader(ProductRepository products, UserRepository users,
-                          RoleRepository roles, PermissionRepository permissions) {
+    public DatabaseLoader(ProductRepository products,
+                          UserRepository users,
+                          RoleRepository roles,
+                          PermissionRepository permissions,
+                          CourierRepository couriers) {
         this.products = products;
         this.users = users;
         this.roles = roles;
         this.permissions = permissions;
+        this.couriers = couriers;
     }
 
     @Override
-    public void run(String... strings) throws Exception {
+    public void run(String... strings) throws Exception
+    {
         Product wires = products.save(new Product("Wires", 520, 415, 0));
         Product oscilograf = products.save(new Product("Осциллограф цифровой", 26500, 2, 0));
         Product searcher = products.save(new Product("Искатель скрытых коммуникаций", 9500, 10, 0));
@@ -63,5 +67,9 @@ public class DatabaseLoader implements CommandLineRunner {
         User delivery = users.save(new User("delivery", "123", role_delivery));
         User store = users.save(new User("store", "123", role_storefront));
         User bank = users.save(new User("bank", "123", role_money));
+
+        couriers.save(new Courier("Пупа", "Луповый", true));
+        couriers.save(new Courier("Дмитрий", "Солодовников", true));
+        couriers.save(new Courier("Олеготаля", "c:", false));
     }
 }

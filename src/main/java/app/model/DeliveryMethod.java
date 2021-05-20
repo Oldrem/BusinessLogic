@@ -14,6 +14,10 @@ public enum DeliveryMethod
         this.text = text;
     }
 
+    public String getText(){
+        return text;
+    }
+
     public static DeliveryMethod fromText(String text) {
         return Arrays.stream(values())
                 .filter(bl -> bl.text.equalsIgnoreCase(text))
