@@ -8,33 +8,24 @@ import app.repositories.DeliveryRequestRepository;
 import app.repositories.OrderRepository;
 import app.repositories.ProductRepository;
 import app.requests.OrderRequestBody;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.jta.JtaTransactionManager;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @Service("orderService")
 @EnableScheduling
 public class OrderService
 {
-    public static final Duration cancelPeriod = Duration.ofMinutes(1);
-
     private OrderRepository orders;
     private ProductRepository products;
     private DeliveryRequestRepository deliveries;
     private TransactionTemplate transactionTemplate;
     private CourierService courierService;
 
-    @Autowired
-    public void setData(OrderRepository orders,
+    public OrderService(OrderRepository orders,
                         ProductRepository products,
                         DeliveryRequestRepository deliveries,
                         PlatformTransactionManager transactionManager,
@@ -45,6 +36,7 @@ public class OrderService
         this.deliveries = deliveries;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.courierService = courierService;
+
     }
 
 
@@ -87,34 +79,5 @@ public class OrderService
                 throw new ProductBookingException("This product is either unavailable or fully booked");
             return orders.save(order);
         });
-    }
-
-
-
-    @Scheduled(fixedRate = 1000 * 60)
-    public void removedUnpaidOverdueOrders()
-    {
-        System.out.println("Launching overdue order cancellation...");
-        int cancelled = 0;
-
-        for (Order order : orders.findAll()) {
-            if (order.getStatus().getText().equals("confirmed") && isOverCancelTime(order.getConfirmationDate()))
-            {
-                order.setStatus(OrderStatus.CANCELED);
-                orders.save(order);
-                System.out.println("Cancelling order #" + order.getOrderId() + " - payment is overdue");
-                cancelled++;
-            }
-        }
-
-        System.out.println("Cancelled " + cancelled + " orders.");
-    }
-
-
-
-    private static boolean isOverCancelTime(LocalDateTime dateTime)
-    {
-        Duration timePassed = Duration.between(dateTime, LocalDateTime.now());
-        return timePassed.compareTo(cancelPeriod) >= 0;
     }
 }

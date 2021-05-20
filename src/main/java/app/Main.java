@@ -14,10 +14,8 @@ public class Main extends SpringBootServletInitializer {
 
         //Requires ActiveMQ instance to be running
 
-        /*
         TestProducer producer = new TestProducer();
         Thread producerThread = new Thread(producer);
         producerThread.start();
-        */
     }
 }
