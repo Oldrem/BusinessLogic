@@ -4,6 +4,7 @@ import app.model.Order;
 import app.model.OrderStatus;
 import app.repositories.OrderRepository;
 import app.requests.OrderRequestBody;
+import app.responces.ReceiptResponse;
 import app.services.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,14 +71,14 @@ public class OrderController {
 
 
     @PutMapping("/order/{id}/payed")
-    ResponseEntity<Order> updatePayedStatus(@PathVariable Long id, @RequestBody Boolean value) {
+    ResponseEntity<ReceiptResponse> updatePayedStatus(@PathVariable Long id, @RequestBody Boolean value) {
         Optional<Order> order = orderRepository.findById(id);
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
         orderService.startOnOrderPaidTransaction(order.get());
 
-        return ResponseEntity.ok().body(order.get());
+        return ResponseEntity.ok().body(orderService.prepareReceipt(order.get()));
     }
 
     @PutMapping("/order/{id}/confirmed")

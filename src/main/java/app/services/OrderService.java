@@ -8,6 +8,7 @@ import app.repositories.DeliveryRequestRepository;
 import app.repositories.OrderRepository;
 import app.repositories.ProductRepository;
 import app.requests.OrderRequestBody;
+import app.responces.ReceiptResponse;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -79,5 +80,21 @@ public class OrderService
                 throw new ProductBookingException("This product is either unavailable or fully booked");
             return orders.save(order);
         });
+    }
+
+    public ReceiptResponse prepareReceipt(Order order)
+    {
+        String out = "ЗАО «ЧИП и ДИП» — Приборы, Радиодетали и Электронные компоненты\n\n";
+        out += "Заказ №" + order.getOrderId() + "\n";
+        out += order.getCreationDate() + "\n\n";
+        Product product = order.getProduct();
+        out += "1 " + product.getName() + "        " + product.getPrice() + "\n";
+        out += "Итого: " + product.getPrice() + "\n";
+        out += "Оплачено: " + product.getPrice() + "\n\n";
+        out += "Очень важные строки текста: 342827984890235743625\n";
+        out += "Ух как важно: ***********4973\n";
+        out += "Никому не говори прям: #FG943782A4\n\n";
+        out += "Спасибо, что выбрали нас! Ждём вас снова!";
+        return new ReceiptResponse(out);
     }
 }

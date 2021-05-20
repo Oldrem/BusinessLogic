@@ -16,7 +16,6 @@ public class UnpaidOrderCancellationJob implements Job
     public static final Duration checkPeriod = Duration.ofSeconds(10);
     public static final Duration cancelAfter = Duration.ofSeconds(20);
 
-
     @Override
     public void execute(JobExecutionContext jobExecutionContext)
     {
