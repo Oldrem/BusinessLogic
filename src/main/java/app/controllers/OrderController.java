@@ -75,9 +75,8 @@ public class OrderController {
         Optional<Order> order = orderRepository.findById(id);
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
         orderService.startOnOrderPaidTransaction(order.get());
-
+        orderService.requestDelivery(order.get());
         return ResponseEntity.ok().body(orderService.prepareReceipt(order.get()));
     }
 

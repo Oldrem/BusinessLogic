@@ -53,17 +53,13 @@ public class OrderService
             {
                 order.setStatus(OrderStatus.PAYED);
                 Product product = order.getProduct();
+                //TODO new method from setbookedamount
                 product.setBookedAmount(product.getBookedAmount() - 1);
                 product.setAmount(product.getAmount() - 1);
                 orders.save(order);
                 products.save(product);
             }
         });
-
-        //Send jms message to delivery request service
-        DeliveryRequest request = new DeliveryRequest(order, "На складе", null);
-        DeliveryRequestProducer producer = new DeliveryRequestProducer();
-        producer.sendMessage(request);
     }
 
 
@@ -72,12 +68,19 @@ public class OrderService
         Order order = rawOrder.constructOrder(products);
         Product product = order.getProduct();
         return transactionTemplate.execute(status -> {
+            //TODO new method from setbookedamount
             product.setBookedAmount(order.getProduct().getBookedAmount() + 1);
             products.save(product);
             if (product.getAmount() < product.getBookedAmount())
                 throw new ProductBookingException("This product is either unavailable or fully booked");
             return orders.save(order);
         });
+    }
+
+    public void requestDelivery(Order order){
+        DeliveryRequest request = new DeliveryRequest(order, "На складе", null);
+        DeliveryRequestProducer producer = new DeliveryRequestProducer();
+        producer.sendMessage(request);
     }
 
     public ReceiptResponse prepareReceipt(Order order)
