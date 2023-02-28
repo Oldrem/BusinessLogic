@@ -6,6 +6,8 @@ import app.repositories.OrderRepository;
 import app.requests.OrderRequestBody;
 import app.responces.ReceiptResponse;
 import app.services.OrderService;
+import app.services.ProductBookingException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,45 +44,63 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    ResponseEntity<Order> createOrder(@Valid @RequestBody OrderRequestBody rawOrder) throws URISyntaxException
+    ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequestBody rawOrder) throws URISyntaxException
     {
-        //try
+        try
         {
             Order result = orderService.startAddOrderTransaction(rawOrder);
             return ResponseEntity.created(new URI("/order/" + result.getOrderId()))
                     .body(result);
         }
-        //catch (ProductBookingException e)
-        //{
-        //    System.out.println(e.getMessage());
-        //    return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
-        //}
+        catch (ProductBookingException e)
+        {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/order/{id}")
     ResponseEntity<Order> updateOrder(@Valid @RequestBody Order order) {
-        Order result = orderRepository.save(order);
+        Order result;
+        try
+        {
+            result = orderRepository.save(order);
+        }
+        catch (EmptyResultDataAccessException e)
+        {
+
+            System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok().body(result);
     }
 
     @DeleteMapping("/order/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
-        orderRepository.deleteById(id);
+        try
+        {
+            orderRepository.deleteById(id);
+        }
+        catch (EmptyResultDataAccessException e)
+        {
+
+            System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok().build();
     }
 
 
-    @PutMapping("/order/{id}/payed")
+    @PutMapping("/order/{id}/pay")
     ResponseEntity<ReceiptResponse> updatePayedStatus(@PathVariable Long id, @RequestBody Boolean value) {
         Optional<Order> order = orderRepository.findById(id);
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         orderService.startOnOrderPaidTransaction(order.get());
-        orderService.requestDelivery(order.get());
         return ResponseEntity.ok().body(orderService.prepareReceipt(order.get()));
     }
 
-    @PutMapping("/order/{id}/confirmed")
+    @PutMapping("/order/{id}/confirm")
     ResponseEntity<Order> updateConfirmationStatus(@PathVariable Long id, @RequestBody Boolean value) {
         Optional<Order> optionalOrder = orderRepository.findById(id);
         if (!optionalOrder.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -94,7 +114,7 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/order/{id}/received")
+    @PutMapping("/order/{id}/receive")
     ResponseEntity<Order> updateReceivedStatus(@PathVariable Long id, @RequestBody Boolean value) {
         Optional<Order> order = orderRepository.findById(id);
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
