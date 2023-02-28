@@ -20,12 +20,18 @@ public class OrderRequestBody
 
     public Order constructOrder(ProductRepository productRepository)
     {
+        if (clientName == null || clientLastName == null)
+            throw new ProductBookingException("Invalid client name or last name");
+
         Optional<Product> p = productRepository.findById(productId);
         if (!p.isPresent())
             throw new ProductBookingException("Invalid product ID");
 
-        if (DeliveryMethod.fromText(methodOfDelivery) == null)
+        if (methodOfDelivery == null || DeliveryMethod.fromText(methodOfDelivery) == null)
             throw new ProductBookingException("Invalid delivery method");
+
+        if (fullAddress == null)
+            throw new ProductBookingException("Invalid address");
 
         Product product = p.get();
         return new Order(clientName, clientLastName, product, fullAddress, methodOfDelivery,
