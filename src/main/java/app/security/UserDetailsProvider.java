@@ -18,11 +18,11 @@ public class UserDetailsProvider implements UserDetailsService
     }
 
     @Transactional
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException{
-        if(!users.existsById(name)) throw new UsernameNotFoundException("Username not found");
-        User user = users.getOne(name);
-        //Set<GrantedAuthority> roles = new HashSet<>();
-        //roles.add(new SimpleGrantedAuthority("USER"));
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException
+    {
+        User user = users.getUserByUsername(name);
+        if(user == null) throw new UsernameNotFoundException("Username not found");
+
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(),
                 AuthorityUtils.createAuthorityList(user.getRolesAsStringArray()));
