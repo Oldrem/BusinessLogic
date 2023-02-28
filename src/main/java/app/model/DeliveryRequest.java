@@ -4,10 +4,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "delivery_requests")
 public class DeliveryRequest implements Serializable
 {
     @Id @GeneratedValue
-    private Long deliveryRequestId;
+    private Long id;
     @OneToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
     private Order order;
     private String deliveryStatus;
@@ -25,12 +26,12 @@ public class DeliveryRequest implements Serializable
     }
 
 
-    public Long getDeliveryRequestId() {
-        return deliveryRequestId;
+    public Long getId() {
+        return id;
     }
 
-    public void setDeliveryRequestId(Long deliveryRequestId) {
-        this.deliveryRequestId = deliveryRequestId;
+    public void setId(Long deliveryRequestId) {
+        this.id = deliveryRequestId;
     }
 
     public Order getOrder() {

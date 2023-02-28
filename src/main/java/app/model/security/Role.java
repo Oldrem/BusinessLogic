@@ -7,9 +7,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "roles")
 public class Role {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue
     private Long id;
 
     private String name;
@@ -19,7 +17,7 @@ public class Role {
 
     @ManyToMany
     @JoinTable(
-            name = "role_permissions",
+            name = "roles_permissions",
             joinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
@@ -33,6 +31,14 @@ public class Role {
     }
 
     public Role() { }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

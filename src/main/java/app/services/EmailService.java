@@ -2,13 +2,11 @@ package app.services;
 
 import app.model.Order;
 import app.model.Product;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.ByteArrayOutputStream;
 import java.util.Properties;
 
 @Service("emailService")
@@ -29,7 +27,7 @@ public class EmailService
     public void sendReceipt(Order order)
     {
         String content = "ЗАО «ЧИП и ДИП» — Приборы, Радиодетали и Электронные компоненты\n\n";
-        content += "Спасибо, заказ №" + order.getOrderId() + " оплачен и скоро направится к Вам!\n";
+        content += "Спасибо, заказ №" + order.getId() + " оплачен и скоро направится к Вам!\n";
         content += order.getCreationDate() + "\n\n";
         Product product = order.getProduct();
         content += "1шт " + product.getName() + "        " + product.getPrice() + "\n";

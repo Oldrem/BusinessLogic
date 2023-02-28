@@ -40,7 +40,7 @@ public class UnpaidOrderCancellationJob implements Job
 
             if (order.getStatus() == OrderStatus.CONFIRMED && isOverCancelTime(order.getConfirmationDate()))
             {
-                System.out.println("Cancelling order #" + order.getOrderId() + " - payment is overdue");
+                System.out.println("Cancelling order #" + order.getId() + " - payment is overdue");
                 order.setStatus(OrderStatus.CANCELED);
                 orders.save(order);
                 Product product = order.getProduct();

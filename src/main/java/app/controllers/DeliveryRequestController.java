@@ -38,7 +38,7 @@ public class DeliveryRequestController
     ResponseEntity<DeliveryRequest> createDeliveryRequest(@Valid @RequestBody DeliveryRequest deliveryRequest) throws URISyntaxException
     {
         DeliveryRequest result = deliveryRequestRepository.save(deliveryRequest);
-        return ResponseEntity.created(new URI("/deliveryRequest/" + result.getDeliveryRequestId()))
+        return ResponseEntity.created(new URI("/deliveryRequest/" + result.getId()))
                 .body(result);
     }
 
@@ -47,7 +47,7 @@ public class DeliveryRequestController
     {
         if (!deliveryRequestRepository.existsById(id))
             throw new RuntimeException("Invalid DeliveryRequestId");
-        deliveryRequest.setDeliveryRequestId(id);
+        deliveryRequest.setId(id);
         DeliveryRequest result = deliveryRequestRepository.save(deliveryRequest);
         return ResponseEntity.ok().body(result);
     }

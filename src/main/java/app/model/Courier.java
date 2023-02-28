@@ -6,10 +6,11 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "couriers")
 public class Courier
 {
     @Id @GeneratedValue
-    private Long courierId;
+    private Long id;
     private String name;
     private String lastName;
     private boolean available;
@@ -27,12 +28,12 @@ public class Courier
     }
 
 
-    public Long getCourierId() {
-        return courierId;
+    public Long getId() {
+        return id;
     }
 
-    public void setCourierId(Long courierId) {
-        this.courierId = courierId;
+    public void setId(Long courierId) {
+        this.id = courierId;
     }
 
     public String getName() {

@@ -5,9 +5,10 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="client_order")
+@Table(name = "orders")
 public class Order implements Serializable {
-    private @Id @GeneratedValue Long orderId;
+    @Id @GeneratedValue
+    private Long id;
     private String clientName;
     private String clientLastName;
     private String clientEmail;
@@ -44,12 +45,12 @@ public class Order implements Serializable {
          */
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Long getId() {
+        return id;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void setId(Long orderId) {
+        this.id = orderId;
     }
 
     public String getClientName() {

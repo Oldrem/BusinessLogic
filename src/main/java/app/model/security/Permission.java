@@ -6,8 +6,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "permissions")
 public class Permission {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue
     private Long id;
 
     private String name;

@@ -38,7 +38,7 @@ public class CourierController
     ResponseEntity<Courier> createCourier(@Valid @RequestBody Courier courier) throws URISyntaxException
     {
         Courier result = courierRepository.save(courier);
-        return ResponseEntity.created(new URI("/courier/" + result.getCourierId()))
+        return ResponseEntity.created(new URI("/courier/" + result.getId()))
                 .body(result);
     }
 
@@ -47,7 +47,7 @@ public class CourierController
     {
         if (!courierRepository.existsById(id))
             throw new RuntimeException("Invalid CourierId");
-        courier.setCourierId(id);
+        courier.setId(id);
         Courier result = courierRepository.save(courier);
         return ResponseEntity.ok().body(result);
     }

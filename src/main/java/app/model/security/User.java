@@ -12,15 +12,16 @@ import java.util.Collection;
 @JsonIgnoreProperties({"password","hibernateLazyInitializer", "handler"})
 public class User
 {
-    @Id
+    @Id @GeneratedValue
+    private Long id;
     private String username;
     private String password;
 
     @ManyToMany
     @JoinTable(
-            name = "user_roles",
+            name = "users_roles",
             joinColumns = @JoinColumn(
-                    name = "username", referencedColumnName = "username"),
+                    name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
@@ -34,6 +35,13 @@ public class User
 
     public User() {}
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

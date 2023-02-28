@@ -53,7 +53,7 @@ public class OrderController {
         {
             Order result = orderService.startAddOrderTransaction(rawOrder);
             emailService.sendConfirmation(result);
-            return ResponseEntity.created(new URI("/order/" + result.getOrderId()))
+            return ResponseEntity.created(new URI("/order/" + result.getId()))
                     .body(result);
         }
         catch (ProductBookingException e)
