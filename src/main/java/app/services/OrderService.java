@@ -9,7 +9,6 @@ import app.repositories.DeliveryRequestRepository;
 import app.repositories.OrderRepository;
 import app.repositories.ProductRepository;
 import app.requests.OrderRequestBody;
-import app.responces.ReceiptResponse;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -26,21 +25,18 @@ public class OrderService
     private DeliveryRequestRepository deliveries;
     private TransactionTemplate transactionTemplate;
     private CourierService courierService;
-    private EmailService emailService;
 
     public OrderService(OrderRepository orders,
                         ProductRepository products,
                         DeliveryRequestRepository deliveries,
                         PlatformTransactionManager transactionManager,
-                        CourierService courierService,
-                        EmailService emailService)
+                        CourierService courierService)
     {
         this.orders = orders;
         this.products = products;
         this.deliveries = deliveries;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.courierService = courierService;
-        this.emailService = emailService;
     }
 
 
@@ -72,7 +68,6 @@ public class OrderService
             if (!product.tryBooking(1))
                 throw new ProductBookingException("This product is either unavailable or fully booked");
             products.save(product);
-            emailService.sendConfirmation(order);
             return orders.save(order);
         });
     }
@@ -83,19 +78,4 @@ public class OrderService
         producer.sendMessage(request);
     }
 
-    public ReceiptResponse prepareReceipt(Order order)
-    {
-        String out = "ЗАО «ЧИП и ДИП» — Приборы, Радиодетали и Электронные компоненты\n\n";
-        out += "Заказ №" + order.getOrderId() + "\n";
-        out += order.getCreationDate() + "\n\n";
-        Product product = order.getProduct();
-        out += "1 " + product.getName() + "        " + product.getPrice() + "\n";
-        out += "Итого: " + product.getPrice() + "\n";
-        out += "Оплачено: " + product.getPrice() + "\n\n";
-        out += "Очень важные строки текста: 342827984890235743625\n";
-        out += "Ух как важно: ***********4973\n";
-        out += "Никому не говори прям: #FG943782A4\n\n";
-        out += "Спасибо, что выбрали нас! Ждём вас снова!";
-        return new ReceiptResponse(out);
-    }
 }

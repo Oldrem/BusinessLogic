@@ -1,6 +1,7 @@
 package app.services;
 
 import app.model.Order;
+import app.model.Product;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,23 @@ public class EmailService
         content += "Не забудьте, что заказ необходимо оплатить в течение 20 секунд!";
 
         send(order.getClientEmail(), "Заказ принят!", content);
+    }
+
+    public void sendReceipt(Order order)
+    {
+        String content = "ЗАО «ЧИП и ДИП» — Приборы, Радиодетали и Электронные компоненты\n\n";
+        content += "Спасибо, заказ №" + order.getOrderId() + " оплачен и скоро направится к Вам!\n";
+        content += order.getCreationDate() + "\n\n";
+        Product product = order.getProduct();
+        content += "1шт " + product.getName() + "        " + product.getPrice() + "\n";
+        content += "Итого: " + product.getPrice() + "\n";
+        content += "Оплачено: " + product.getPrice() + "\n\n";
+        content += "Очень важные строки текста: 342827984890235743625\n";
+        content += "Ух как важно: ***********4973\n";
+        content += "Никому не говори прям: #FG943782A4\n\n";
+        content += "Спасибо, что выбрали нас! Ждём вас снова!";
+
+        send(order.getClientEmail(), "Заказ оплачен", content);
     }
 
     private void send(String recipient, String subject, String content)

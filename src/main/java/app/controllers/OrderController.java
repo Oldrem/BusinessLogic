@@ -4,7 +4,7 @@ import app.model.Order;
 import app.model.OrderStatus;
 import app.repositories.OrderRepository;
 import app.requests.OrderRequestBody;
-import app.responces.ReceiptResponse;
+import app.services.EmailService;
 import app.services.OrderService;
 import app.services.ProductBookingException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -24,11 +24,14 @@ import java.util.Optional;
 public class OrderController {
     private OrderRepository orderRepository;
     private OrderService orderService;
+    private EmailService emailService;
 
     public OrderController(OrderRepository orderRepository,
-                           OrderService orderService) {
+                           OrderService orderService, EmailService emailService) {
         this.orderRepository = orderRepository;
         this.orderService = orderService;
+        this.emailService = emailService;
+
     }
 
     @GetMapping("/orders")
@@ -49,6 +52,7 @@ public class OrderController {
         try
         {
             Order result = orderService.startAddOrderTransaction(rawOrder);
+            emailService.sendConfirmation(result);
             return ResponseEntity.created(new URI("/order/" + result.getOrderId()))
                     .body(result);
         }
@@ -92,12 +96,13 @@ public class OrderController {
 
 
     @PutMapping("/order/{id}/pay")
-    ResponseEntity<ReceiptResponse> updatePayedStatus(@PathVariable Long id, @RequestBody Boolean value) {
+    ResponseEntity<?> updatePayedStatus(@PathVariable Long id, @RequestBody Boolean value) {
         Optional<Order> order = orderRepository.findById(id);
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
         orderService.startOnOrderPaidTransaction(order.get());
-        return ResponseEntity.ok().body(orderService.prepareReceipt(order.get()));
+        emailService.sendReceipt(order.get());
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/order/{id}/confirm")
