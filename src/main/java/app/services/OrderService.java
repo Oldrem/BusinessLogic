@@ -26,19 +26,21 @@ public class OrderService
     private DeliveryRequestRepository deliveries;
     private TransactionTemplate transactionTemplate;
     private CourierService courierService;
+    private EmailService emailService;
 
     public OrderService(OrderRepository orders,
                         ProductRepository products,
                         DeliveryRequestRepository deliveries,
                         PlatformTransactionManager transactionManager,
-                        CourierService courierService)
+                        CourierService courierService,
+                        EmailService emailService)
     {
         this.orders = orders;
         this.products = products;
         this.deliveries = deliveries;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.courierService = courierService;
-
+        this.emailService = emailService;
     }
 
 
@@ -70,6 +72,7 @@ public class OrderService
             if (!product.tryBooking(1))
                 throw new ProductBookingException("This product is either unavailable or fully booked");
             products.save(product);
+            emailService.sendConfirmation(order);
             return orders.save(order);
         });
     }
