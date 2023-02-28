@@ -10,6 +10,7 @@ public class Order implements Serializable {
     private @Id @GeneratedValue Long orderId;
     private String clientName;
     private String clientLastName;
+    private String clientEmail;
     @ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.PERSIST)
     @JoinColumn(name = "productId", nullable = false)
     private Product product;
@@ -25,9 +26,10 @@ public class Order implements Serializable {
 
     public Order() {}
 
-    public Order(String clientName, String clientLastName, Product product, String deliveryInfo, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, OrderStatus status) {
+    public Order(String clientName, String clientLastName, String clientEmail, Product product, String deliveryInfo, String methodOfDelivery, LocalDateTime creationDate, LocalDateTime confirmationDate, OrderStatus status) {
         this.clientName = clientName;
         this.clientLastName = clientLastName;
+        this.clientEmail = clientEmail;
         this.product = product;
         this.deliveryInfo = deliveryInfo;
         this.methodOfDelivery = methodOfDelivery;
@@ -112,6 +114,14 @@ public class Order implements Serializable {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public String getClientEmail() {
+        return clientEmail;
+    }
+
+    public void setClientEmail(String clientEmail) {
+        this.clientEmail = clientEmail;
     }
 
     /*

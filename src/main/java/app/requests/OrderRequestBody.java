@@ -9,23 +9,31 @@ import app.services.ProductBookingException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class OrderRequestBody
 {
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^(.+)@(\\S+)$");
+
     private String clientName;
     private String clientLastName;
+    private String clientEmail;
     private long productId;
     private String fullAddress;
     private String methodOfDelivery;
 
     public Order constructOrder(ProductRepository productRepository)
     {
+
         if (clientName == null || clientLastName == null)
             throw new ProductBookingException("Invalid client name or last name");
 
         Optional<Product> p = productRepository.findById(productId);
         if (!p.isPresent())
             throw new ProductBookingException("Invalid product ID");
+
+        if (!EMAIL_PATTERN.matcher(clientEmail).matches())
+            throw new ProductBookingException("Invalid E-Mail");
 
         if (methodOfDelivery == null || DeliveryMethod.fromText(methodOfDelivery) == null)
             throw new ProductBookingException("Invalid delivery method");
@@ -34,7 +42,7 @@ public class OrderRequestBody
             throw new ProductBookingException("Invalid address");
 
         Product product = p.get();
-        return new Order(clientName, clientLastName, product, fullAddress, methodOfDelivery,
+        return new Order(clientName, clientLastName, clientEmail, product, fullAddress, methodOfDelivery,
                 LocalDateTime.now(), null,
                 OrderStatus.NEW);
     }
@@ -77,5 +85,15 @@ public class OrderRequestBody
 
     public void setMethodOfDelivery(String methodOfDelivery) {
         this.methodOfDelivery = methodOfDelivery;
+    }
+
+    public void setClientEmail(String clientEmail)
+    {
+        this.clientEmail = clientEmail;
+    }
+
+    public String getClientEmail()
+    {
+        return clientEmail;
     }
 }
