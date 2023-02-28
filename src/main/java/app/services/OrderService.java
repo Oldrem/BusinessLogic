@@ -53,9 +53,7 @@ public class OrderService
             {
                 order.setStatus(OrderStatus.PAYED);
                 Product product = order.getProduct();
-                //TODO new method from setbookedamount
-                product.setBookedAmount(product.getBookedAmount() - 1);
-                product.setAmount(product.getAmount() - 1);
+                product.shipBooked(1);
                 orders.save(order);
                 products.save(product);
             }
@@ -67,12 +65,11 @@ public class OrderService
     {
         Order order = rawOrder.constructOrder(products);
         Product product = order.getProduct();
-        return transactionTemplate.execute(status -> {
-            //TODO new method from setbookedamount
-            product.setBookedAmount(order.getProduct().getBookedAmount() + 1);
-            products.save(product);
-            if (product.getAmount() < product.getBookedAmount())
+        return transactionTemplate.execute(status ->
+        {
+            if (!product.tryBooking(1))
                 throw new ProductBookingException("This product is either unavailable or fully booked");
+            products.save(product);
             return orders.save(order);
         });
     }

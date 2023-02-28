@@ -2,7 +2,9 @@ package app.services.scheduling;
 
 import app.model.Order;
 import app.model.OrderStatus;
+import app.model.Product;
 import app.repositories.OrderRepository;
+import app.repositories.ProductRepository;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerException;
@@ -20,8 +22,11 @@ public class UnpaidOrderCancellationJob implements Job
     public void execute(JobExecutionContext jobExecutionContext)
     {
         OrderRepository orders = null;
+        ProductRepository products = null;
+
         try {
             orders = (OrderRepository) jobExecutionContext.getScheduler().getContext().get("orders");
+            products = (ProductRepository) jobExecutionContext.getScheduler().getContext().get("products");
         }
         catch (SchedulerException e) {
             e.printStackTrace();
@@ -35,9 +40,12 @@ public class UnpaidOrderCancellationJob implements Job
 
             if (order.getStatus() == OrderStatus.CONFIRMED && isOverCancelTime(order.getConfirmationDate()))
             {
+                System.out.println("Cancelling order #" + order.getOrderId() + " - payment is overdue");
                 order.setStatus(OrderStatus.CANCELED);
                 orders.save(order);
-                System.out.println("Cancelling order #" + order.getOrderId() + " - payment is overdue");
+                Product product = order.getProduct();
+                product.releaseBooking(1);
+                products.save(product);
                 cancelled++;
             }
         }

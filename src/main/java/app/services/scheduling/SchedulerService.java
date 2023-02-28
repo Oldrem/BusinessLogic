@@ -1,6 +1,7 @@
 package app.services.scheduling;
 
 import app.repositories.OrderRepository;
+import app.repositories.ProductRepository;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.stereotype.Service;
@@ -9,14 +10,17 @@ import org.springframework.stereotype.Service;
 public class SchedulerService
 {
     private OrderRepository orders;
+    private ProductRepository products;
     private Scheduler scheduler;
 
-    public SchedulerService(OrderRepository orders) throws SchedulerException
+    public SchedulerService(OrderRepository orders, ProductRepository products) throws SchedulerException
     {
         this.orders = orders;
+        this.products = products;
 
         scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.getContext().put("orders", orders);
+        scheduler.getContext().put("products", products);
         scheduler.start();
         scheduleOrderCancellation();
     }

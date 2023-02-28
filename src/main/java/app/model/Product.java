@@ -61,4 +61,22 @@ public class Product implements Serializable {
     public void setBookedAmount(int bookedAmount) {
         this.bookedAmount = bookedAmount;
     }
+
+    public boolean tryBooking(int amountToBook)
+    {
+        if (bookedAmount + amountToBook > amount) return false;
+        bookedAmount += amountToBook;
+        return true;
+    }
+
+    public void releaseBooking(int amount)
+    {
+        bookedAmount -= amount;
+    }
+
+    public void shipBooked(int amountToShip)
+    {
+        bookedAmount -= amountToShip;
+        amount -= amountToShip;
+    }
 }
