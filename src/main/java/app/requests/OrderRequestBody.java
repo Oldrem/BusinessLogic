@@ -32,7 +32,7 @@ public class OrderRequestBody
         if (!p.isPresent())
             throw new ProductBookingException("Invalid product ID");
 
-        if (!EMAIL_PATTERN.matcher(clientEmail).matches())
+        if (clientEmail == null || !EMAIL_PATTERN.matcher(clientEmail).matches())
             throw new ProductBookingException("Invalid E-Mail");
 
         if (methodOfDelivery == null || DeliveryMethod.fromText(methodOfDelivery) == null)

@@ -51,7 +51,7 @@ public class OrderController {
     {
         try
         {
-            Order result = orderService.startAddOrderTransaction(rawOrder);
+            Order result = orderService.addOrder(rawOrder);
             emailService.sendConfirmation(result);
             return ResponseEntity.created(new URI("/order/" + result.getId()))
                     .body(result);
@@ -96,38 +96,30 @@ public class OrderController {
 
 
     @PutMapping("/order/{id}/pay")
-    ResponseEntity<?> updatePayedStatus(@PathVariable Long id, @RequestBody Boolean value) {
-        Optional<Order> order = orderRepository.findById(id);
-        if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-        orderService.startOnOrderPaidTransaction(order.get());
-        emailService.sendReceipt(order.get());
+    ResponseEntity<?> updatePayedStatus(@PathVariable Long id) {
+        Optional<Order> optionalOrder = orderRepository.findById(id);
+        if (!optionalOrder.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Order order = optionalOrder.get();
+        orderService.payForOrder(order);
+        emailService.sendReceipt(order);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/order/{id}/confirm")
-    ResponseEntity<Order> updateConfirmationStatus(@PathVariable Long id, @RequestBody Boolean value) {
+    ResponseEntity<Order> updateConfirmationStatus(@PathVariable Long id) {
         Optional<Order> optionalOrder = orderRepository.findById(id);
         if (!optionalOrder.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
         Order order = optionalOrder.get();
-        order.setStatus(OrderStatus.CONFIRMED);
-        order.setConfirmationDate(LocalDateTime.now());
-        orderRepository.save(order);
-
+        orderService.confirmOrder(order);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/order/{id}/receive")
-    ResponseEntity<Order> updateReceivedStatus(@PathVariable Long id, @RequestBody Boolean value) {
+    ResponseEntity<Order> updateReceivedStatus(@PathVariable Long id) {
         Optional<Order> order = orderRepository.findById(id);
         if (!order.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        if (!value) return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
         order.get().setStatus(OrderStatus.RECEIVED);
         orderRepository.save(order.get());
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

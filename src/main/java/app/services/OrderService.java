@@ -16,6 +16,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.time.LocalDateTime;
+
 @Service("orderService")
 @EnableScheduling
 public class OrderService
@@ -40,7 +42,7 @@ public class OrderService
     }
 
 
-    public void startOnOrderPaidTransaction(Order order)
+    public void payForOrder(Order order)
     {
         if (order.getStatus() != OrderStatus.CONFIRMED)
             throw new OrderPaymentException("Order has not been confirmed yet");
@@ -59,7 +61,7 @@ public class OrderService
     }
 
 
-    public Order startAddOrderTransaction(OrderRequestBody rawOrder)
+    public Order addOrder(OrderRequestBody rawOrder)
     {
         Order order = rawOrder.constructOrder(products);
         Product product = order.getProduct();
@@ -70,6 +72,12 @@ public class OrderService
             products.save(product);
             return orders.save(order);
         });
+    }
+
+    public void confirmOrder(Order order){
+        order.setStatus(OrderStatus.CONFIRMED);
+        order.setConfirmationDate(LocalDateTime.now());
+        orders.save(order);
     }
 
     public void requestDelivery(Order order){
